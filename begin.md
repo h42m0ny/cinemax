@@ -7,12 +7,19 @@
  create entity : bin/console make:entity 
 
  create CRUD : bin/console make:crud 
+ 
 
  To create bdd :
 
 IN .env file update line 
 DATABAS_URL=mysql://root@127.0.0.1:3306/cinemax
 launch  : bin/console doctrine:database:create 
+
+ to create migration : php bin/console make:migration
+
+ to launch the migration : php bin/console doctrine:migrations:migrate
+
+ php bin/console make:entity --regenerate
 
 To create a command: bin/console make:command 
 (this creates a class in src/Command)

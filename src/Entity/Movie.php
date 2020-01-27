@@ -54,6 +54,11 @@ class Movie
      */
     private $genres;
 
+    public function __construct()
+    {
+        $this->genres = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
