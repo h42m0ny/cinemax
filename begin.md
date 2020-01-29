@@ -32,3 +32,7 @@ $entityManager->persist($entity);
 $entityManager->flush();
 
 
+Bundle pour ajax 
+composer require friendsofsymfony/jsrouting-bundle
+
+php bin/console assets:install --symlink public

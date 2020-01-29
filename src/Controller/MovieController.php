@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
-use App\Form\MovieType;
+use App\Form\MovieType; 
+use App\Entity\GenreMovie;
+use App\Repository\GenreMovieRepository;
 use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/movie")
@@ -16,13 +19,29 @@ use Symfony\Component\Routing\Annotation\Route;
 class MovieController extends AbstractController
 {
     /**
-     * @Route("/", name="movie_index", methods={"GET"})
+     * @Route("/", name="movie_index", methods={"GET"}, options={"expose"=true})
      */
-    public function index(MovieRepository $movieRepository): Response
+    public function index(MovieRepository $movieRepository, GenreMovieRepository $genreRepo): Response
     {
+        $genresMovie = $genreRepo->findAll();
+        // $pagination = $paginator->paginate($movieRepository->findAll(),$page, 20);
+        $movies = $movieRepository->findAll();
         return $this->render('movie/index.html.twig', [
-            'movies' => $movieRepository->findAll(),
+            'movies' => $movies,
+            'genresMovie' => $genresMovie
         ]);
+    }
+
+    /**
+     * @Route("/{name}", name="movie_index_genre", methods={"GET"})
+     */
+    public function indexByGenre(GenreMovieRepository $genreRepo, GenreMovie $genre){
+        return $this->render('movie/index.html.twig',[
+            'movies' => $genre->getMovies(),
+            'genre' => $genre,
+            'genresMovie' =>$genreRepo->findAll()
+        ]);
+
     }
 
     /**

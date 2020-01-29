@@ -28,6 +28,11 @@ class GenreMovie
      */
     private $movies;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $imDBID;
+
     public function __construct()
     {
         $this->movies = new ArrayCollection();
@@ -74,6 +79,18 @@ class GenreMovie
             $this->movies->removeElement($movie);
             $movie->removeGenre($this);
         }
+
+        return $this;
+    }
+
+    public function getImDBID(): ?int
+    {
+        return $this->imDBID;
+    }
+
+    public function setImDBID(int $imDBID): self
+    {
+        $this->imDBID = $imDBID;
 
         return $this;
     }

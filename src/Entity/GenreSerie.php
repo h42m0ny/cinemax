@@ -28,6 +28,11 @@ class GenreSerie
      */
     private $series;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $imDBID;
+
     public function __construct()
     {
         $this->series = new ArrayCollection();
@@ -72,6 +77,18 @@ class GenreSerie
         if ($this->series->contains($series)) {
             $this->series->removeElement($series);
         }
+
+        return $this;
+    }
+
+    public function getImDBID(): ?int
+    {
+        return $this->imDBID;
+    }
+
+    public function setImDBID(int $imDBID): self
+    {
+        $this->imDBID = $imDBID;
 
         return $this;
     }

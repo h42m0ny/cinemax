@@ -52,7 +52,7 @@ class CinImportDataCommand extends Command
 
     protected static $defaultName = 'cin:import-data';
 
-    public function __construct(MovieRepository $movieRepo, GenreMovieRepository $genreMovieRepo, SerieRepository $serieRepo,GenreSerieRepository $genreSerieRepo, ContainerInterface $container)
+    public function __construct(MovieRepository $movieRepo, GenreMovieRepository $genreMovieRepo, SerieRepository $serieRepo, GenreSerieRepository $genreSerieRepo, ContainerInterface $container)
     {
         $this->movieRepo = $movieRepo;
         $this->genreMovieRepo = $genreMovieRepo;
@@ -97,7 +97,8 @@ class CinImportDataCommand extends Command
 
         while ($nbPage <= $responseContent->total_pages) {
             foreach ($responseContent->results as $res) {
-                if (!$this->movieRepo->findOneBy(['imDBID' => $res->id])) {
+                $movie = $this->movieRepo->findOneBy(['imDBID' => $res->id]);
+                if (!$movie) {
                     $movie = new Movie();
                     if (property_exists($res, 'release_date')) {
                         $movie->setReleaseDate(new \DateTime($res->release_date));
@@ -111,16 +112,17 @@ class CinImportDataCommand extends Command
                     if (property_exists($res, 'poster_path')) {
                         $movie->setImage($res->poster_path);
                     }
-                    $genres = $res->genre_ids;
-
+                }
+                $genres = $res->genre_ids;
+                if (count($genres) > 0) {
                     foreach ($genres as $genreId) {
-                        $genre = $this->genreMovieRepo->findOneBy(['id' => $genreId]);
+                        $genre = $this->genreMovieRepo->findOneBy(['imDBID' => $genreId]);
                         if ($genre) {
                             $movie->addGenre($genre);
                         }
                     }
-                    $this->em->persist($movie);
                 }
+                $this->em->persist($movie);
             }
             $nbPage++;
         }
@@ -136,8 +138,9 @@ class CinImportDataCommand extends Command
         $responseContent = json_decode($httpClient->request('GET', $api_url)->getContent());
 
         foreach ($responseContent->genres as $res) {
-            if (!$this->genreMovieRepo->findOneBy(['id' => $res->id])) {
+            if (!$this->genreMovieRepo->findOneBy(['imDBID' => $res->id])) {
                 $genreMovie = new GenreMovie();
+                $genreMovie->setImDBID($res->id);
                 $genreMovie->setName($res->name);
 
                 $this->em->persist($genreMovie);
@@ -146,38 +149,40 @@ class CinImportDataCommand extends Command
         $this->em->flush();
     }
 
-    private function importSeriesData(){
+    private function importSeriesData()
+    {
         $api_url = 'https://api.themoviedb.org/3/discover/tv?api_key=1124f4b0c0c458a06050a35f0347130e&language=fr-FR&sort_by=popularity.desc&page=1&timezone=America%2FNew_York&include_null_first_air_dates=false&page=';
-        
+
         $nbPage = 1;
         $httpClient = HttpClient::create();
         $responseContent = json_decode($httpClient->request('GET', $api_url)->getContent());
 
         $totalPages = $responseContent->total_pages;
-        while($nbPage <= $totalPages)
-        {
+        while ($nbPage <= $totalPages) {
 
             foreach ($responseContent->results as $res) {
-                if(!$this->serieRepo->findOneBy(['imDBID' => $res->id])){
+                $serie = $this->serieRepo->findOneBy(['imDBID' => $res->id]);
+                if (!$serie) {
                     $serie = new Serie();
+                    $serie->setImDBID($res->id);
                     $serie->setName($res->name);
                     $serie->setNote($res->vote_average);
                     $serie->setSummary($res->overview);
                     $serie->setImage($res->poster_path);
-                    if (property_exists($res, 'first_air_date')){
+                    if (property_exists($res, 'first_air_date')) {
                         $serie->setFirstAirDate(new \DateTime($res->first_air_date));
                     }
-                    $genres = $res->genre_ids;
-
+                }
+                $genres = $res->genre_ids;
+                if (count($genres) > 0) {
                     foreach ($genres as $genreId) {
-                        $genre = $this->genreSerieRepo->findOneBy(['id' => $genreId]);
+                        $genre = $this->genreSerieRepo->findOneBy(['imDBID' => $genreId]);  
                         if ($genre) {
                             $serie->addGenreSeries($genre);
                         }
-                    }                   
-                    $this->em->persist($serie);
-
+                    }
                 }
+                $this->em->persist($serie);
             }
 
             $nbPage++;
@@ -185,7 +190,8 @@ class CinImportDataCommand extends Command
         $this->em->flush();
     }
 
-    public function importSeriesGenreData() {
+    public function importSeriesGenreData()
+    {
         $api_url = 'https://api.themoviedb.org/3/genre/tv/list?api_key=1124f4b0c0c458a06050a35f0347130e&language=fr-FR';
 
         $httpClient = HttpClient::create();
@@ -193,8 +199,9 @@ class CinImportDataCommand extends Command
         $responseContent = json_decode($httpClient->request('GET', $api_url)->getContent());
 
         foreach ($responseContent->genres as $res) {
-            if (!$this->genreMovieRepo->findOneBy(['id' => $res->id])) {
+            if (!$this->genreMovieRepo->findOneBy(['imDBID' => $res->id])) {
                 $genreSerie = new GenreSerie();
+                $genreSerie->setImDBID($res->id);
                 $genreSerie->setName($res->name);
 
                 $this->em->persist($genreSerie);
