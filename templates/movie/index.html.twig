@@ -3,7 +3,6 @@
 {% block title %}Films{% endblock %}
 
 {% block body %}
-
     <h1>Filmographie</h1>
 
 <div class="container-fluid">
@@ -19,8 +18,8 @@
     
   </div>
 </div>
-
-    <div></div>
-
+    <div class="navigation">
+    {{ knp_pagination_render(movies) }}
+    </div>
     <a href="{{ path('movie_new') }}">Create new</a>
 {% endblock %}

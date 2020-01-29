@@ -81,6 +81,7 @@ class CinImportDataCommand extends Command
         $this->importMoviesData();
         $this->importSeriesData();
 
+        $this->em->flush();
         $io->success('Command succeed');
 
         return 0;
@@ -92,10 +93,11 @@ class CinImportDataCommand extends Command
 
         $api_url = 'https://api.themoviedb.org/3/discover/movie?api_key=1124f4b0c0c458a06050a35f0347130e&language=fr-FR&sort_by=popularity.desc&include_adult=false&include_video=false&page=';
         $nbPage = 1;
-
         $responseContent = json_decode($httpClient->request('GET', $api_url . $nbPage)->getContent());
 
-        while ($nbPage <= $responseContent->total_pages) {
+        $totalPages = $responseContent->total_pages;
+        while ($nbPage <= $totalPages) {
+            $responseContent = json_decode($httpClient->request('GET', $api_url . $nbPage)->getContent());
             foreach ($responseContent->results as $res) {
                 $movie = $this->movieRepo->findOneBy(['imDBID' => $res->id]);
                 if (!$movie) {
@@ -114,7 +116,7 @@ class CinImportDataCommand extends Command
                     }
                 }
                 $genres = $res->genre_ids;
-                if (count($genres) > 0) {
+                if (count($genres) > 0 ) {
                     foreach ($genres as $genreId) {
                         $genre = $this->genreMovieRepo->findOneBy(['imDBID' => $genreId]);
                         if ($genre) {
@@ -126,7 +128,6 @@ class CinImportDataCommand extends Command
             }
             $nbPage++;
         }
-        $this->em->flush();
     }
 
     private function importMovieGenresData()
@@ -146,7 +147,6 @@ class CinImportDataCommand extends Command
                 $this->em->persist($genreMovie);
             }
         }
-        $this->em->flush();
     }
 
     private function importSeriesData()
@@ -156,10 +156,10 @@ class CinImportDataCommand extends Command
         $nbPage = 1;
         $httpClient = HttpClient::create();
         $responseContent = json_decode($httpClient->request('GET', $api_url)->getContent());
-
         $totalPages = $responseContent->total_pages;
-        while ($nbPage <= $totalPages) {
 
+        while ($nbPage <= $totalPages) {
+            $responseContent = json_decode($httpClient->request('GET', $api_url.$nbPage)->getContent());
             foreach ($responseContent->results as $res) {
                 $serie = $this->serieRepo->findOneBy(['imDBID' => $res->id]);
                 if (!$serie) {
@@ -187,7 +187,6 @@ class CinImportDataCommand extends Command
 
             $nbPage++;
         }
-        $this->em->flush();
     }
 
     public function importSeriesGenreData()
@@ -207,6 +206,6 @@ class CinImportDataCommand extends Command
                 $this->em->persist($genreSerie);
             }
         }
-        $this->em->flush();
+
     }
 }

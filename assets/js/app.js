@@ -12,12 +12,31 @@ import '../css/app.scss';
 const $ = require('jquery');
 require('popper.js');
 require('bootstrap');
-
-console.log('Hello Webpack Encore! Edit me in assets/js/app.js');
-
+require('material-design-icons');
 
 const routes = require('../../public/js/fos_js_routes.json');
 import Routing from '../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';
 
 Routing.setRoutingData(routes);
-Routing.generate('movie_index');
+// Routing.generate('movie_index');
+// Routing.generate('add_favourite_movie');
+$(function() {
+    
+    $('.js-movie-fav').click(function(){
+        let imDBID = $(this).data('imdbid');
+        let $that = $(this); //convention qd on récupère un elt du DOM on préfixe le nom de var avec un $ ici on stocke l'élément courant (bouton) pr l'utiliser dans le contexte ajax
+        $.ajax({
+            method: "POST",
+            url: Routing.generate("add_favourite_movie",{'imDBID':imDBID})
+            })
+            .done(function( jsonResponse ) {
+                console.log(jsonResponse);
+              alert( jsonResponse.message + ' ' + jsonResponse.data);
+              if (jsonResponse.message == 'added' ){
+                  $that.addClass('favourite');
+              } else if (jsonResponse.message == 'removed'){
+                  $that.removeClass('favourite');
+              }
+            });
+    });
+});

@@ -16,8 +16,10 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@material/icon-button": "^4.0.0",
         "bootstrap": "^4.4.1",
         "jquery": "^3.4.1",
+        "material-design-icons": "^3.0.1",
         "popper.js": "^1.16.1"
     }
 }

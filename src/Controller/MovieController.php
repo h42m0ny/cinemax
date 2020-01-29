@@ -19,13 +19,12 @@ use Knp\Component\Pager\PaginatorInterface;
 class MovieController extends AbstractController
 {
     /**
-     * @Route("/", name="movie_index", methods={"GET"}, options={"expose"=true})
+     * @Route("/{page}", name="movie_index", methods={"GET"}, options={"expose"=true}, defaults={"page"=1})
      */
-    public function index(MovieRepository $movieRepository, GenreMovieRepository $genreRepo): Response
+    public function index(MovieRepository $movieRepository, GenreMovieRepository $genreRepo, PaginatorInterface $paginator, int $page): Response
     {
         $genresMovie = $genreRepo->findAll();
-        // $pagination = $paginator->paginate($movieRepository->findAll(),$page, 20);
-        $movies = $movieRepository->findAll();
+        $movies = $movieRepository->getMoviesPagination($paginator, $page);
         return $this->render('movie/index.html.twig', [
             'movies' => $movies,
             'genresMovie' => $genresMovie
@@ -33,11 +32,11 @@ class MovieController extends AbstractController
     }
 
     /**
-     * @Route("/{name}", name="movie_index_genre", methods={"GET"})
+     * @Route("/genre/{name}/{page}", name="movie_index_genre", methods={"GET"}, defaults={"page"=1})
      */
-    public function indexByGenre(GenreMovieRepository $genreRepo, GenreMovie $genre){
+    public function indexByGenre(GenreMovieRepository $genreRepo, GenreMovie $genre, MovieRepository $movieRepo, PaginatorInterface $paginator, int $page){
         return $this->render('movie/index.html.twig',[
-            'movies' => $genre->getMovies(),
+            'movies' => $movieRepo->getMoviesByGenre($paginator, $genre->getId(), $page),
             'genre' => $genre,
             'genresMovie' =>$genreRepo->findAll()
         ]);

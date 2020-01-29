@@ -1,4 +1,14 @@
 @import "~bootstrap/scss/bootstrap";
+@import '~material-design-icons/iconfont/material-icons.css';
 body {
     background-color: lightgray;
+}
+.material-icons.js-movie-fav {
+    font-size: 35px;
+    vertical-align: middle;
+    margin-bottom: 5px;
+}
+
+.material-icons.js-movie-fav.favourite {
+    color: red;
 }

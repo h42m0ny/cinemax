@@ -1,0 +1,7 @@
+form:
+    delete: "Supprimer"
+    submit: "Enregistrer"
+    new: "Nouveau"
+    label:
+        login: "Votre login"
+        password: "Votre mot de passe"

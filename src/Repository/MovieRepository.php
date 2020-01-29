@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-
+use Knp\Component\Pager\PaginatorInterface;
 /**
  * @method Movie|null find($id, $lockMode = null, $lockVersion = null)
  * @method Movie|null findOneBy(array $criteria, array $orderBy = null)
@@ -35,6 +35,28 @@ class MovieRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * Get paginated movies without criteria
+     */
+    public function getMoviesPagination(PaginatorInterface $paginator, int $page) {
+        //prepare the request
+        $query = $this->createQueryBuilder('m')->getQuery();
+        $pagination =$paginator->paginate($query, $page, 30);
+
+        return $pagination;
+
+    }
+
+    public function getMoviesByGenre(PaginatorInterface $paginator, int $id, int $page)
+    {
+        $qb = $this->createQueryBuilder('movie');
+        $qb->join('movie.genres', 'genre')
+            ->where($qb->expr()->eq('genre.id', $id));
+        $query = $qb->getQuery();
+        $pagination =$paginator->paginate($query, $page, 30);
+        return $pagination;
+    }
 
     /*
     public function findOneBySomeField($value): ?Movie
