@@ -22,12 +22,12 @@
 
             <p class="card-text">
                 {% for genre in movie.genres %}
-                    <a href="#"> {{ genre.name }} </a>
+                    <a href="{{path('movie_index_genre',{name: genre.name })}}"> {{ genre.name }} </a>
                     {% if not loop.last %}, {% endif %}
                 {% endfor %}
             </p>
             <div class="col text-center">
-                <a href="{{ path('movie_show', {'id': movie.id}) }}" class="btn btn-primary">Détail</a>
+                <a href="{{ path('movie_show', {'id': movie.id}) }}" class="btn btn-dark">Détail</a>
             </div>
         </div>
     </div>

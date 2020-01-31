@@ -18,8 +18,11 @@
     
   </div>
 </div>
-    <div class="navigation">
-    {{ knp_pagination_render(movies) }}
+
+    <div class="row navigation ">
+
+        <div class="mx-auto">{{ knp_pagination_render(movies) }}</div>
+
     </div>
     <a href="{{ path('movie_new') }}">Create new</a>
 {% endblock %}

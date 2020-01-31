@@ -7,6 +7,7 @@ use App\Form\MovieType;
 use App\Entity\GenreMovie;
 use App\Repository\GenreMovieRepository;
 use App\Repository\MovieRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,7 @@ use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/movie")
+ * @IsGranted("ROLE_USER")
  */
 class MovieController extends AbstractController
 {

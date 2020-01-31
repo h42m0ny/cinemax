@@ -1,58 +1,68 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#"></a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
-      <li class="nav-item ">
-        <a class="nav-link" href="{{ path('site') }}">Accueil <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{{ path('movie_index') }}">Films</a>
-      </li>
-     
-      
-    
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          Genres films
-        </a>
-        <div id="navDropMenu" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          {% for genre in genres_movie_links.getGenres() %}
-             <a class="dropdown-item" href="{{path('movie_index_genre',{'name':genre.name})}}">{{genre.name}}</a>
-             {% endfor %}
-        </div>
-      </li>
-        <li class="nav-item">
-        <a class="nav-link" href="{{ path('serie_index') }}">Séries</a>
-      </li> 
-      {% if app.user %}
-         <li class="nav-item">
-        <a class="nav-link" >{{ app.user.username }}</a>
-      </li>
-      <li class="nav-item">
+    <a class="navbar-brand" href="#"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item ">
+                <a class="nav-link" href="{{ path('site') }}">Netflop </a>
+            </li>
+            {% if app.user %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('movie_index') }}">Films</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="true">
+                    Genres films
+                </a>
+                <div id="navDropMenu" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    {% for genre in genres_movie_links.getGenres() %}
+                        <a class="dropdown-item"
+                           href="{{ path('movie_index_genre',{'name':genre.name}) }}">{{ genre.name }}</a>
+                    {% endfor %}
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('serie_index') }}">Séries</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Bienvenue {{ app.user.username }}</a>
+            </li>
+        </ul>
+    </div>
+    <form class="form-inline mr-sm-2">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Rechercher</button>
+    </form>
+    <li class="nav-item">
         <a class="nav-link" href="{{ path('logout') }}">Se déconnecter</a>
-      </li> 
-      {% else %}
-          <li class="nav-item">
-        <a class="nav-link" href="{{ path('login') }}">Se connecter</a>
-      </li> 
-
-    {% endif %}
-    </ul>
-  </div>
+    </li>
 </nav>
+{% else %}
+
+    </ul>
+    </div>
+    <div class="form-inline mr-sm-2">
+        <a class="nav-link" href="{{ path('login') }}">Se connecter</a>
+        <a class="nav-link" href="{{ path('app_register') }}">S'inscrire</a>
+    </div>
+    </nav>
+    {% endif %}
+
+
 {% block javascripts %}
-<script>
-    document.getElementById('navbarDropdownMenuLink').addEventListener('click',function(event){
-        
-        if (document.getElementById('navDropMenu').style.display == 'none'){
-            document.getElementById('navDropMenu').style.display = 'block';
-        } else {
-            document.getElementById('navDropMenu').style.display = 'none';
-        }
-        
-    });
-</script>
+    <script>
+        document.getElementById('navbarDropdownMenuLink').addEventListener('click', function (event) {
+
+            if (document.getElementById('navDropMenu').style.display == 'none') {
+                document.getElementById('navDropMenu').style.display = 'block';
+            } else {
+                document.getElementById('navDropMenu').style.display = 'none';
+            }
+
+        });
+    </script>
 {% endblock %}

@@ -13,6 +13,7 @@ const $ = require('jquery');
 require('popper.js');
 require('bootstrap');
 require('material-design-icons');
+require('../img/home_film_img.jpg');
 
 const routes = require('../../public/js/fos_js_routes.json');
 import Routing from '../../vendor/friendsofsymfony/jsrouting-bundle/Resources/public/js/router.min.js';

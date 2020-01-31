@@ -10,5 +10,29 @@ body {
 }
 
 .material-icons.js-movie-fav.favourite {
-    color: red;
+    color: #E62600;
+}
+
+.navigation {
+    margin-top: 10px;
+}
+
+.card {
+    margin-bottom: 10px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #F2F2F2;
+}
+
+a.nav-link{
+    color: #F2F2F2;
+}
+
+.page-item.active .page-link {
+    background-color: #23272b;;
+}
+
+.pagination * {
+    color: #23272b;
 }
